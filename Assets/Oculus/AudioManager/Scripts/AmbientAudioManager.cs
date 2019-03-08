@@ -7,12 +7,15 @@ public class AmbientAudioManager : MonoBehaviour {
     public AudioSource aboveSrc;
     public AudioSource belowSrc;
 
-    public float oceanHeight = 34.462f;
+    
     public Transform player;
+    public Transform OceanPlane;
     public AudioClip[] clips;
+    public Animator anim;
 
     private int nextClip;
     private bool prevState;
+    private float oceanHeight;
 
     // Use this for initialization
     void Awake() {
@@ -20,6 +23,7 @@ public class AmbientAudioManager : MonoBehaviour {
         prevState = IsAboveWater();
         aboveSrc.Pause();
         aboveSrc.clip = clips[0];
+        oceanHeight = OceanPlane.position.y;
     }
 	
 	// Update is called once per frame
@@ -31,6 +35,7 @@ public class AmbientAudioManager : MonoBehaviour {
                 belowSrc.Stop();
                 aboveSrc.Play();
                 prevState = state;
+                anim.SetBool("User_breaching", true);
             }
             if (aboveSrc.isPlaying)
             {
@@ -51,6 +56,7 @@ public class AmbientAudioManager : MonoBehaviour {
                 ResetAbove();
                 belowSrc.Play();
                 prevState = state;
+                anim.SetBool("User_breaching", false);
             }
         }
     }

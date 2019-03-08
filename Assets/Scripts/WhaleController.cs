@@ -9,6 +9,7 @@ public class WhaleController : MonoBehaviour {
 
     public Transform player;
     private Transform whale;
+    private float threshold = 0.0f;
 
     public float triggerDistance = 10.0f;
 
@@ -30,7 +31,7 @@ public class WhaleController : MonoBehaviour {
 
     private void Update()
     {
-        if (Vector3.Distance(whale.position, swimPoint.position) > 0.05f)
+        if (Vector3.Distance(whale.position, swimPoint.position) > threshold)
         {
             //Debug.Log("Swim point still far");
             float distance = Vector3.Distance(whale.position, player.position);

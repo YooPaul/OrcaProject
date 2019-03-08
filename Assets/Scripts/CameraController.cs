@@ -7,12 +7,17 @@ public class CameraController : MonoBehaviour {
     Transform holdertransform;
     public Animator granny_anim;
     public Animator pod_anim;
+    public Transform oceanPlane;
+    public float heightOffset = 0.0f;
+    private float oceanHeight;
+    private float startHeight;
 
 	// Use this for initialization
 	void Start () {
         GameObject holder = GameObject.Find("OVR_Rig_Holder");
         holdertransform = holder.transform;
-
+        oceanHeight = oceanPlane.position.y;
+        startHeight = holder.transform.position.y;
     }
 	
 	// Update is called once per frame
@@ -36,17 +41,21 @@ public class CameraController : MonoBehaviour {
 
         float y = 0.0f;
 
-        //if (OVRInput.Get(OVRInput.RawButton.B)) // || Input.GetKeyDown(KeyCode.Space))
-        if (Input.GetKey(KeyCode.Space))
+        if (holdertransform.position.y < oceanHeight + heightOffset)
         {
-            y = 4.0f * Time.deltaTime;
+            //if (OVRInput.Get(OVRInput.RawButton.B)) // || Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKey(KeyCode.Space))
+            {
+                y = 4.0f * Time.deltaTime;
+            }
         }
         //else if (OVRInput.Get(OVRInput.RawButton.A))
-        else if (Input.GetKey(KeyCode.Return))
-        {
-            y = -4.0f * Time.deltaTime;
+        if (holdertransform.position.y >= startHeight) { 
+            if (Input.GetKey(KeyCode.Return))
+            {
+                y = -4.0f * Time.deltaTime;
+            }
         }
-
         
         holdertransform.Translate(translationX, y, translation);
         Debug.Log(transform.rotation.eulerAngles.x);

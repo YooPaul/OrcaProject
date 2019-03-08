@@ -4,21 +4,23 @@ using UnityEngine;
 
 public class ParticleManager : MonoBehaviour {
 
-    public float oceanHeight = 34.462f;
     public Transform player;
     public Transform whale;
+    public Transform OceanPlane;
 
     public ParticleSystem userMove, whaleMove, water;
     public ParticleSystem whaleSplash, playerSplash;
 
     private bool prevState;
     private bool prevWhaleState;
+    private float oceanHeight;
 
     // Use this for initialization
     void Start () {
         prevState = IsAboveWater();
         prevWhaleState = IsWhaleAboveWater();
-	}
+        oceanHeight = OceanPlane.position.y;
+    }
 	
 	// Update is called once per frame
 	void Update () {
