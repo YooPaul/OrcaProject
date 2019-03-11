@@ -9,11 +9,13 @@ public class WhalePath : MonoBehaviour {
     [SerializeField]
     public Transform player, whale;
     public float moveSpeed = 3.0f;
-    public float triggerDistance, playerTrigger;
+    public float triggerDistance, playerTrigger, celebrationTime;
     public List<Transform> waypoints;
 
+
     private int current, target;
-    private bool reached, prev;
+    private bool reached, prev, celebrating;
+    private float celebrationStart = 0.0f;
 
     // Start is called before the first frame update
     void Start() {
@@ -30,14 +32,29 @@ public class WhalePath : MonoBehaviour {
             reached = true;
             if (reached != prev) {
                 anim.SetBool("Follow", true);
+                prev = reached;
             }
 
             if ((player.position - whale.position).magnitude < playerTrigger) {
+                celebrating = true;
+                anim.SetBool("Celebrating", true);
+                celebrationStart = Time.time;
+            }
+            if(Time.time - celebrationStart < celebrationTime != celebrating) {
+                celebrating = false;
+                anim.SetBool("Celebrating", false);
                 current = target;
                 if (target < waypoints.Count - 1) {
                     target++;
                 }
             }
+
+            
+
+        }
+
+        if (celebrating) {
+            Debug.Log("Celebrting: " + celebrating);
         }
 
         Vector3 move = waypoints[target].position - whale.position;
