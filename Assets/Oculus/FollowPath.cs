@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 public class FollowPath : MonoBehaviour
 {
@@ -10,14 +11,16 @@ public class FollowPath : MonoBehaviour
     public float lookSpeed = 0.5f;
     public float triggerDistance;
     public List<Transform> waypoints;
+    public PostProcessVolume post;
 
     private int current, target;
 
     // Start is called before the first frame update
     void Start()
     {
-        current = 0;
-        target = 1;
+        current = 4;
+        target = 5;
+        Vignette v = ScriptableObject.CreateInstance<Vignette>();
     }
 
     // Update is called once per frame
@@ -47,6 +50,14 @@ public class FollowPath : MonoBehaviour
                 {
                     move = waypoints[current].position - player.position;
                 }
+               /* if (move.magnitude > 0) {
+                    
+                    v.enabled.Override(true);
+                    v.intensity.Override(Mathf.Clamp(v.intensity + 0.05f, 0, 0.5f));
+                } else {
+                    v.enabled.Override(true);
+                    v.intensity.Override(Mathf.Clamp(v.intensity - 0.05f, 0, 0.5f));
+                }*/
                 player.position += move.normalized * playerSpeed * Time.deltaTime;
             }
         } else

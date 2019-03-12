@@ -12,6 +12,7 @@ public class WhalePath : MonoBehaviour {
     public float lookSpeed = 2.0f;
     public float triggerDistance, playerTrigger, celebrationTime;
     public List<Transform> waypoints;
+    public AudioSource wsrc;
 
 
     public int current, target;
@@ -20,8 +21,8 @@ public class WhalePath : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        current = 0;
-        target = 1;
+        current = 4;
+        target = 5;
         reached = false;
         prev = false;
         playerReached = false;
@@ -76,6 +77,7 @@ public class WhalePath : MonoBehaviour {
                     anim.SetBool("Celebrating", true);
                     celebrationStart = Time.time;
                     prevR = playerReached;
+                    wsrc.Play();
                 }
                 else if (!playerReached)
                 {

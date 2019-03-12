@@ -13,11 +13,14 @@ public class AmbientAudioManager : MonoBehaviour {
     public AudioClip[] clips;
     public Animator anim;
     public GameObject pod;
+    public FadeControl fade;
+    public float playDuration;
+
 
     private int nextClip;
     private bool prevState;
-    private float oceanHeight;
-    private bool goneAbove;
+    private float oceanHeight, podStart;
+    private bool goneAbove, fadeStarted;
 
     // Use this for initialization
     void Awake() {
@@ -27,6 +30,7 @@ public class AmbientAudioManager : MonoBehaviour {
         aboveSrc.clip = clips[0];
         oceanHeight = OceanPlane.position.y;
         goneAbove = false;
+        fadeStarted = false;
     }
 	
 	// Update is called once per frame
@@ -38,9 +42,16 @@ public class AmbientAudioManager : MonoBehaviour {
             if(!pod.active)
             {
                 pod.SetActive(true);
-    
+                podStart = Time.time;
             }
             
+        }
+
+        if (pod.active) {
+            if (Time.time - podStart > playDuration && !fadeStarted) {
+                fade.fadeOut();
+                fadeStarted = true;
+            }
         }
 
         if (state)
