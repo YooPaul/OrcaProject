@@ -988,7 +988,7 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
-    motionNodeName: 
+    motionNodeName: granny:Granny_topCon/granny:bind_joint_grp/granny:Granny_root_bind_joint
     rigImportErrors: 
     rigImportWarnings: 
     animationImportErrors: 
@@ -1076,7 +1076,8 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    rootMotionBoneName: 
+    rootMotionBoneName: granny:Granny_root_bind_joint
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1

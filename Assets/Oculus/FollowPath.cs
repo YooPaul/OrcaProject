@@ -5,8 +5,9 @@ using UnityEngine;
 public class FollowPath : MonoBehaviour
 {
     [SerializeField]
-    public Transform player;
+    public Transform player, whale;
     public float playerSpeed = 3.0f;
+    public float lookSpeed = 0.5f;
     public float triggerDistance;
     public List<Transform> waypoints;
 
@@ -22,28 +23,43 @@ public class FollowPath : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-        if (atTarget()) {
-            current = target;
-            if (target < waypoints.Count-1) {
-                target++;
-            }
-        }
+        var targetRotation = Quaternion.LookRotation(waypoints[target].position - transform.position);
 
-        Vector2 xy = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
-        
-        Vector3 move = Vector3.zero;
-        if (Input.GetKey(KeyCode.UpArrow) || (Mathf.Sign(xy.y) > 0 && xy.y != 0.0f)) {
-            move = waypoints[target].position - player.position;
-        } else if (Input.GetKey(KeyCode.DownArrow) || (Mathf.Sign(xy.y) < 0 && xy.y != 0.0f)) {
-            move = waypoints[current].position - player.position;
+        // Smoothly rotate towards the target point.
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, lookSpeed * Time.deltaTime);
+
+        if (!atTarget() && whale.GetComponent<WhalePath>().hasReached()) {
+            Vector2 xy = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
+            Debug.Log(xy);
+            Vector3 move = Vector3.zero;
+            if (Input.GetKey(KeyCode.UpArrow) || (Mathf.Sign(xy.y) > 0 && xy.y != 0.0f))
+            {
+                move = waypoints[target].position - player.position;
+            }
+            else if (Input.GetKey(KeyCode.DownArrow) || (Mathf.Sign(xy.y) < 0 && xy.y != 0.0f))
+            {
+                move = waypoints[current].position - player.position;
+            }
+            player.position += move.normalized * playerSpeed * Time.deltaTime;
         }
-        player.position += move.normalized * playerSpeed * Time.deltaTime;
+        
     }
 
     private bool atTarget() {
         return ((player.position - waypoints[target].position).magnitude < triggerDistance);
     }
 
+    public void updateTarget()
+    {
+        current = target;
+        if (target < waypoints.Count - 1)
+        {
+            target++;
+        }
+        else if (target == waypoints.Count - 1)
+        {
+            target--;
+        }
+    }
     
 }
