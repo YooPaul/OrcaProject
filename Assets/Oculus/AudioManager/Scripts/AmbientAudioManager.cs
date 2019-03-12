@@ -12,10 +12,12 @@ public class AmbientAudioManager : MonoBehaviour {
     public Transform OceanPlane;
     public AudioClip[] clips;
     public Animator anim;
+    public GameObject pod;
 
     private int nextClip;
     private bool prevState;
     private float oceanHeight;
+    private bool goneAbove;
 
     // Use this for initialization
     void Awake() {
@@ -24,13 +26,26 @@ public class AmbientAudioManager : MonoBehaviour {
         aboveSrc.Pause();
         aboveSrc.clip = clips[0];
         oceanHeight = OceanPlane.position.y;
+        goneAbove = false;
     }
 	
 	// Update is called once per frame
 	void Update () {
         bool state = IsAboveWater();
+
+        if (IsAboveWater())
+        {
+            if(!pod.active)
+            {
+                pod.SetActive(true);
+    
+            }
+            
+        }
+
         if (state)
         {
+            
             if(state != prevState) {
                 belowSrc.Stop();
                 aboveSrc.Play();
@@ -60,6 +75,8 @@ public class AmbientAudioManager : MonoBehaviour {
             }
         }
     }
+
+    
 
     void ResetAbove()
     {

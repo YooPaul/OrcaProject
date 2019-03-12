@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/WhaleSpaceScene.unity
     guid: 2f65b7693bd94144ea534bafb66fc3aa
+  - enabled: 1
+    path: Assets/BeginScene.unity
+    guid: 97fa152102a207c4888da24dbfe8622f
   m_configObjects: {}

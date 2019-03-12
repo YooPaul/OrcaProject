@@ -14,7 +14,7 @@ public class ReloadScene : MonoBehaviour {
 	void Update () {
 		if (Input.GetKey(KeyCode.R))
         {
-            SceneManager.LoadScene("WhaleSpaceScene");
+            SceneManager.LoadScene("WhaleSpaceScene");//SceneManager.LoadScene("WhaleSpaceScene");
         }
 	}
 }

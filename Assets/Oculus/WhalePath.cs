@@ -15,7 +15,7 @@ public class WhalePath : MonoBehaviour {
 
 
     public int current, target;
-    public bool reached, prev, playerReached, prevR, celebrating;
+    public bool reached, prev, playerReached, prevR, celebrating, end, start;
     public float celebrationStart = 0.0f;
 
     // Start is called before the first frame update
@@ -27,58 +27,87 @@ public class WhalePath : MonoBehaviour {
         playerReached = false;
         prevR = false;
         lookTarget = player;
+        end = false;
+        start = false;
     }
 
     // Update is called once per frame
     void Update() {
 
-        var targetRotation = Quaternion.LookRotation(lookTarget.transform.position - transform.position);
-
-        // Smoothly rotate towards the target point.
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, lookSpeed * Time.deltaTime);
-
-        playerReached = (player.position - whale.position).magnitude < playerTrigger;
-        
-
-        if (target > 3)
+        if (start)
         {
-            playerTrigger = 15;
-        }
+            end = target == 5 && atTarget();
+            if (target < 6)
+            {
+                var targetRotation = Quaternion.LookRotation(lookTarget.transform.position - transform.position);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, lookSpeed * Time.deltaTime);
+            }
+            else
+            {
+                triggerDistance = 0.05f;
+                var targetRotation = Quaternion.LookRotation(new Vector3(player.position.x, 0, player.position.z) - new Vector3(transform.position.x, 0, transform.position.z));
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, lookSpeed * Time.deltaTime);
+            }
+            playerReached = (player.position - whale.position).magnitude < playerTrigger;
 
-        if (atTarget()) {
-            reached = true;
-           lookTarget = player;
-            if (reached != prev) {
-                anim.SetBool("Follow", true);
-                anim.SetBool("Swim", false);
-                
-                prev = reached;
+
+            if (target > 3)
+            {
+                playerTrigger = 15;
             }
 
-            
-            
-            if (playerReached && playerReached != prevR) {
-                celebrating = true;
-                anim.SetBool("Celebrating", true);
-                celebrationStart = Time.time;
-                prevR = playerReached;
-            } else if (!playerReached) {
-                prevR = false;
-            }
-            if(Time.time - celebrationStart > celebrationTime && celebrating) {
-                
-            } 
-        } else {
-            reached = false;
-            prev = false;
-            lookTarget = (waypoints[target]);
-        }
+            if (atTarget())
+            {
+                reached = true;
+                lookTarget = player;
+                if (reached != prev)
+                {
+                    anim.SetBool("Follow", true);
+                    anim.SetBool("Swim", false);
 
-        if (anim.GetBool("Swim")) {
-            Vector3 move = waypoints[target].position - whale.position;
-            whale.position += move.normalized * moveSpeed * Time.deltaTime;
+                    prev = reached;
+                }
+
+
+
+                if (playerReached && playerReached != prevR)
+                {
+                    celebrating = true;
+                    anim.SetBool("Celebrating", true);
+                    celebrationStart = Time.time;
+                    prevR = playerReached;
+                }
+                else if (!playerReached)
+                {
+                    prevR = false;
+                }
+                if (Time.time - celebrationStart > celebrationTime && celebrating)
+                {
+
+                }
+            }
+            else
+            {
+                reached = false;
+                prev = false;
+                lookTarget = (waypoints[target]);
+            }
+
+            if (anim.GetBool("Swim"))
+            {
+                if (target < waypoints.Count)
+                {
+                    Vector3 move = waypoints[target].position - whale.position;
+                    whale.position += move.normalized * moveSpeed * Time.deltaTime;
+                }
+            }
+
+            if (end)
+            {
+                moveToNext();
+                end = false;
+            }
         }
-        
     }
 
     private bool atTarget() {
@@ -90,11 +119,13 @@ public class WhalePath : MonoBehaviour {
         celebrating = false;
         anim.SetBool("Celebrating", false);
         current = target;
-        if (target < waypoints.Count - 1)
+      
+        if (target < waypoints.Count)
         {
             target++;
+            anim.SetInteger("Target", target);
         }
-        anim.SetInteger("Target", target);
+        //anim.SetInteger("Target", target);
         anim.SetBool("Swim", true);
         anim.SetBool("Follow", false);
         player.GetComponent<FollowPath>().updateTarget();
@@ -103,5 +134,10 @@ public class WhalePath : MonoBehaviour {
     public bool hasReached()
     {
         return reached;
+    }
+
+    public void StartMoves()
+    {
+        start = true;
     }
 }
